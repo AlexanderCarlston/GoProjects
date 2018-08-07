@@ -24,9 +24,27 @@ func main(){
 		fmt.Println("Error:", n, "< 0")
 		return
 	}
+/*			∞ n*2^n*(n!)^2
+	π + 3 =  Σ ------------
+			n=1   (2*n)!
+*/
+	pi := big.NewRat(0, 1)
+	tempInt := big.NewInt(1)
+	term := big.NewRat(0.0, 1.0)
 
-	
-
+	for k := 1; k < 4*n+10; k++ {
+		top := big.NewInt(int64(k))
+		tempInt = tempInt.Exp(big.NewInt(2), big.NewInt(int64(k)), nil)
+		top = top.Mul(top, tempInt)
+		tempInt = tempInt.Exp(tempInt.Set(factorialHelper(k)), big.NewInt(2), nil)
+		top = top.Mul(top, tempInt)
+		bottom := factorialHelper(2 * k)
+		term := term.SetFrac(top, bottom)
+		pi.Add(pi, term)
+	}
+	pi = pi.Add(pi, big.NewRat(-3, 1))
+	fmt.Println("π to", n, "decimal places: ")
+	fmt.Println(pi.FloatString(n))
 }
 
 func factorialHelper(a int) *big.Int {
